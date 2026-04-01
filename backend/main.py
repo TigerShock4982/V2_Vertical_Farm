@@ -1,6 +1,7 @@
 from fastapi import FastAPI, WebSocket, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import os
 import asyncio
 from datetime import datetime
 from typing import Optional, Set
@@ -187,4 +188,5 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)

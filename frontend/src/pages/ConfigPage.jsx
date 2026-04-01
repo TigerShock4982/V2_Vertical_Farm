@@ -2,43 +2,25 @@ import { useState, useEffect } from 'react'
 import './ConfigPage.css'
 
 export default function ConfigPage({ serverUrl, setServerUrl }) {
-  const [localhost, setLocalhost] = useState(false)
-  const [customIp, setCustomIp] = useState(() => {
-    const url = localStorage.getItem('serverUrl') || serverUrl
-    if (url.includes('localhost')) {
-      return ''
-    }
-    return url.replace('http://', '').replace(':8000', '')
+  const [customUrl, setCustomUrl] = useState(() => {
+    const saved = localStorage.getItem('serverUrl') || serverUrl || 'http://localhost:8000'
+    return saved
   })
   const [farmId, setFarmId] = useState(() => localStorage.getItem('farmId') || 'farm_001')
   const [deviceId, setDeviceId] = useState(() => localStorage.getItem('deviceId') || 'sensor_01')
   const [saved, setSaved] = useState(false)
 
-  useEffect(() => {
-    setLocalhost(serverUrl.includes('localhost'))
-  }, [serverUrl])
-
   const handleSaveConfig = () => {
-    let url = 'http://localhost:8000'
-    if (!localhost && customIp) {
-      url = `http://${customIp}:8000`
-    }
+    // Trim trailing slashes and store URL directly
+    const cleanUrl = customUrl.replace(/\/$/, '') || 'http://localhost:8000'
 
-    setServerUrl(url)
+    setServerUrl(cleanUrl)
     localStorage.setItem('farmId', farmId)
     localStorage.setItem('deviceId', deviceId)
-    localStorage.setItem('serverUrl', url)
+    localStorage.setItem('serverUrl', cleanUrl)
 
     setSaved(true)
     setTimeout(() => setSaved(false), 3000)
-  }
-
-  const handleLocalChange = () => {
-    const newLocal = !localhost
-    setLocalhost(newLocal)
-    if (newLocal) {
-      setServerUrl('http://localhost:8000')
-    }
   }
 
   return (
@@ -56,36 +38,18 @@ export default function ConfigPage({ serverUrl, setServerUrl }) {
 
           <div className="config-form">
             <div className="form-group">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={localhost}
-                  onChange={handleLocalChange}
-                />
-                <span>Use Localhost (127.0.0.1:8000)</span>
-              </label>
+              <label htmlFor="serverUrl">Backend URL</label>
+              <input
+                id="serverUrl"
+                type="text"
+                value={customUrl}
+                onChange={(e) => setCustomUrl(e.target.value)}
+                placeholder="http://localhost:8000 or https://your-render-app.onrender.com"
+              />
+              <p className="help-text">
+                Enter the full backend URL: http://localhost:8000 (local), http://192.168.1.100:8000 (LAN), or https://your-app.onrender.com (Render)
+              </p>
             </div>
-
-            {!localhost && (
-              <div className="form-group">
-                <label htmlFor="customIp">Server IP Address</label>
-                <div className="input-wrapper">
-                  <span className="prefix">http://</span>
-                  <input
-                    id="customIp"
-                    type="text"
-                    value={customIp}
-                    onChange={(e) => setCustomIp(e.target.value)}
-                    placeholder="192.168.1.100"
-                  />
-                  <span className="suffix">:8000</span>
-                </div>
-                <p className="help-text">
-                  Example: 192.168.1.100 (find your server IP using: hostname -I or look in your
-                  router's connection list)
-                </p>
-              </div>
-            )}
 
             <div className="current-url">
               <label>Current URL:</label>

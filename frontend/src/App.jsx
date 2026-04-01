@@ -10,7 +10,7 @@ export default function App() {
   const [isHealthy, setIsHealthy] = useState(false)
   const [serverUrl, setServerUrl] = useState(() => {
     const saved = localStorage.getItem('serverUrl')
-    return saved || 'http://localhost:8000'
+    return saved || import.meta.env.VITE_API_URL || 'http://localhost:8000'
   })
 
   useEffect(() => {

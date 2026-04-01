@@ -101,7 +101,7 @@ npm run dev
 Frontend starts at `http://localhost:5173`
 
 Direct your browser to the development server and configure:
-1. **On Config page**: Set server IP (default: localhost:8000)
+1. **On Config page**: Set backend URL (default: http://localhost:8000, or enter your Render URL)
 2. **Farm ID**: Enter your farm identifier
 3. **Device ID**: Enter sensor device ID
 
@@ -195,27 +195,52 @@ MOCK_SENSOR_INTERVAL=2.0
 
 ## Deployment
 
-### Deploy to Render (Recommended)
+### Deploy to Render (Recommended - Free Tier)
+
+**Easy Option: Using render.yaml**
+
+1. Push code to GitHub
+2. Go to https://dashboard.render.com
+3. Click "New" → "Blueprint"
+4. Connect your GitHub repository
+5. Render will automatically detect `render.yaml` and deploy both services
+6. After backend deploys, copy its URL and update the frontend's `VITE_API_URL` environment variable
+
+**Manual Option:**
 
 #### Backend
 1. Push code to GitHub
 2. Create new "Web Service" on Render
 3. Connect GitHub repository
-4. Set environment:
+4. Set configuration:
    - Runtime: Python 3.11
-   - Build: `pip install -r backend/requirements.txt`
-   - Start: `cd backend && python main.py`
-5. Deploy
+   - Build command: `pip install -r backend/requirements.txt`
+   - Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - Root directory: `backend`
+5. Add environment variables:
+   - `DEBUG`: `False`
+   - `MOCK_SENSOR_ENABLED`: `True`
+   - `MOCK_SENSOR_INTERVAL`: `2.0`
+   - `CORS_ORIGINS`: `["*"]`
+6. Deploy
+
+Note the backend URL (e.g., `https://v2-vertical-farm-backend.onrender.com`)
 
 #### Frontend
 1. Create new "Static Site" on Render
 2. Connect GitHub repository
-3. Build command: `cd frontend && npm install && npm run build`
-4. Publish directory: `frontend/dist`
-5. Add environment variable:
-   - Key: `VITE_API_URL`
-   - Value: Backend URL from Render
-6. Deploy
+3. Set configuration:
+   - Build command: `cd frontend && npm install && npm run build`
+   - Publish directory: `frontend/dist`
+   - Root directory: `frontend`
+4. Add environment variables:
+   - `VITE_API_URL`: Paste the backend URL from above
+5. Deploy
+
+**After Deployment:**
+- Frontend will be available at your Render URL
+- Open Config page and verify it connects to your backend
+- Mock sensors will automatically start posting data
 
 ### Docker Deployment
 

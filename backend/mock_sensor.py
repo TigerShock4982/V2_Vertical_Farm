@@ -1,11 +1,15 @@
 import asyncio
+import os
 import random
 import time
 import httpx
 from datetime import datetime
 
 # Configuration
-API_URL = "http://localhost:8000/ingest"
+API_URL = os.getenv(
+    "MOCK_SENSOR_API_URL",
+    f"http://127.0.0.1:{os.getenv('PORT', '8000')}/ingest"
+)
 FARM_ID = "farm_001"
 DEVICES = [
     {"id": "sensor_01", "name": "Tray 1"},

@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: v2-vertical-farm-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DEBUG
+        value: "False"
+      - key: MOCK_SENSOR_ENABLED
+        value: "True"
+      - key: MOCK_SENSOR_INTERVAL
+        value: "2.0"
+      - key: CORS_ORIGINS
+        value: '["*"]'
+
+  - type: static_site
+    name: v2-vertical-farm-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://REPLACE_WITH_BACKEND_URL
