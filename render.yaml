@@ -18,7 +18,8 @@ services:
       - key: CORS_ORIGINS
         value: '["*"]'
 
-  - type: static_site
+  - type: web
+    runtime: static
     name: v2-vertical-farm-frontend
     rootDir: frontend
     buildCommand: npm install && npm run build
