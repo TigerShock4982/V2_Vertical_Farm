@@ -16,7 +16,7 @@ DEVICES = [
     {"id": "sensor_02", "name": "Tray 2"},
     {"id": "sensor_03", "name": "Tray 3"},
 ]
-INTERVAL = 2.0  # seconds between readings
+INTERVAL = float(os.getenv("MOCK_SENSOR_INTERVAL", "2.0"))
 
 
 class SensorSimulator:

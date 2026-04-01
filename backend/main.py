@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
+import sys
 import asyncio
 from datetime import datetime
 from typing import Optional, Set
@@ -55,7 +56,7 @@ async def start_mock_sensor():
         import subprocess
 
         subprocess.Popen(
-            ["python", "mock_sensor.py"],
+            [sys.executable, "mock_sensor.py"],
             cwd=".",
         )
         print("Mock sensor started")

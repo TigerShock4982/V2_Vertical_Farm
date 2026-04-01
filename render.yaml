@@ -25,4 +25,7 @@ services:
     publishDir: dist
     envVars:
       - key: VITE_API_URL
-        value: https://REPLACE_WITH_BACKEND_URL
+        fromService:
+          type: web
+          name: v2-vertical-farm-backend
+          property: hostport
